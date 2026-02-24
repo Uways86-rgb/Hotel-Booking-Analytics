@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hotel Booking Reviews Analytics Dashboard">
+    <title>{% block title %}Booking Reviews{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'analytics/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <div class="logo">📊</div>
+            <div class="brand-text">Booking<span>Analytics</span></div>
+        </a>
+        <ul class="navbar-menu">
+            <li><a href="#" class="active">Dashboard</a></li>
+            <li><a href="#">Hotels</a></li>
+            <li><a href="#">Reviews</a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                Booking<span>Analytics</span> © 2026
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="footer-copyright">
+                Powered by Django & Chart.js
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
