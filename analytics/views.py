@@ -104,11 +104,14 @@ def hotels(request):
         for name, row in hotel_stats.head(20).iterrows()
     ]
     
+    avg_rating_all = df['reviews.rating'].mean()
+    
     context = {
         'top_hotels_json': json.dumps([h['name'] for h in top_hotels_list]),
         'top_hotels_data': json.dumps([h['rating'] for h in top_hotels_list]),
         'top_hotels_list': top_hotels_list,
-        'total_hotels': len(hotel_stats)
+        'total_hotels': len(hotel_stats),
+        'avg_rating_all': round(avg_rating_all, 2) if pd.notna(avg_rating_all) else 0
     }
     
     return render(request, "hotels.html", context)

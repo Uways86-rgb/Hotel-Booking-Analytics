@@ -41,11 +41,14 @@
             <span class="chart-badge">Ranked</span>
         </div>
         <div class="hotels-list">
-            {% for hotel, data in hotels.items %}
+            {% for hotel in top_hotels_list %}
             <div class="hotel-item">
-                <div class="hotel-name">{{ hotel }}</div>
+                <div class="hotel-info">
+                    <div class="hotel-name">{{ hotel.name }}</div>
+                    <div class="hotel-reviews">{{ hotel.review_count }} reviews</div>
+                </div>
                 <div class="hotel-rating">
-                    <span class="rating-value">{{ data.reviews.rating }}</span>
+                    <span class="rating-value">{{ hotel.rating }}</span>
                     <span class="rating-stars">⭐</span>
                 </div>
             </div>
@@ -71,9 +74,18 @@
     .hotel-item:hover {
         background: var(--bg-light);
     }
+    .hotel-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
     .hotel-name {
         font-weight: 500;
         color: var(--text-dark);
+    }
+    .hotel-reviews {
+        font-size: 0.85rem;
+        color: var(--text-muted);
     }
     .hotel-rating {
         display: flex;
