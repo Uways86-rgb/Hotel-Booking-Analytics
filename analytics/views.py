@@ -9,9 +9,25 @@ def dashboard(request):
     # Get filter parameters
     rating_filter = request.GET.get('rating', 'all')
     province_filter = request.GET.get('province', 'all')
+    category_filter = request.GET.get('category', 'all')
+    
+    # Extract unique categories from the dataset
+    all_categories = df['categories'].dropna().unique().tolist()
+    # Parse categories and get unique individual categories
+    unique_categories = set()
+    for cat in all_categories:
+        if isinstance(cat, str):
+            for c in cat.split(','):
+                c = c.strip()
+                if c:
+                    unique_categories.add(c)
+    categories = sorted(list(unique_categories))
     
     # Apply filters
     filtered_df = df.copy()
+    
+    if category_filter != 'all':
+        filtered_df = filtered_df[filtered_df['categories'].fillna('').str.contains(category_filter, case=False)]
     
     if rating_filter != 'all':
         if rating_filter == 'high':
@@ -83,8 +99,10 @@ def dashboard(request):
         'rating_avg': round(rating_stats['avg'], 1) if pd.notna(rating_stats['avg']) else 0,
         # Filter options
         'provinces': provinces,
+        'categories': categories,
         'selected_rating': rating_filter,
         'selected_province': province_filter,
+        'selected_category': category_filter,
     }
 
     return render(request, "dashboard.html", context)

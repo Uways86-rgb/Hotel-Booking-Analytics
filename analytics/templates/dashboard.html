@@ -16,6 +16,15 @@
     <section class="filters-section">
         <form method="GET" class="filters-form" id="filterForm">
             <div class="filter-group">
+                <label for="category">Category:</label>
+                <select name="category" id="category" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {% if selected_category == 'all' %}selected{% endif %}>All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
                 <label for="rating">Rating Filter:</label>
                 <select name="rating" id="rating" class="filter-select" onchange="document.getElementById('filterForm').submit()">
                     <option value="all" {% if selected_rating == 'all' %}selected{% endif %}>All Ratings</option>
