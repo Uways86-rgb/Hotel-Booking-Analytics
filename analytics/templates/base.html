@@ -11,27 +11,24 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
-        <a href="#" class="navbar-brand">
+        <a href="{% url 'dashboard' %}" class="navbar-brand">
             <div class="logo">📊</div>
             <div class="brand-text">Booking<span>Analytics</span></div>
         </a>
         <ul class="navbar-menu">
-            <li><a href="#" class="active">Dashboard</a></li>
-            <li><a href="#">Hotels</a></li>
-            <li><a href="#">Reviews</a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'hotels' %}">Hotels</a></li>
+            <li><a href="{% url 'reviews' %}">Reviews</a></li>
+            <li><a href="{% url 'reports' %}">Reports</a></li>
+            <li><a href="{% url 'settings' %}">Settings</a></li>
         </ul>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-container">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">

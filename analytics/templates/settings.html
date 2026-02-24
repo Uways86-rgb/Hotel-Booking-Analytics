@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - Booking Reviews{% endblock %}
+
+{% block content %}
+    <header class="page-header">
+        <h1>Application Settings</h1>
+        <p>Configure your analytics dashboard</p>
+    </header>
+
+    <section class="chart-card">
+        <div class="chart-header">
+            <h2 class="chart-title">Application Info</h2>
+        </div>
+        <div class="settings-grid">
+            <div class="setting-item">
+                <label>Application Name</label>
+                <span>Booking Analytics</span>
+            </div>
+            <div class="setting-item">
+                <label>Version</label>
+                <span>1.0.0</span>
+            </div>
+            <div class="setting-item">
+                <label>Data Source</label>
+                <span>clean_booking_reviews.csv</span>
+            </div>
+            <div class="setting-item">
+                <label>Last Updated</label>
+                <span>Real-time</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="chart-card">
+        <div class="chart-header">
+            <h2 class="chart-title">System Status</h2>
+        </div>
+        <div class="status-indicators">
+            <div class="status-item">
+                <span class="status-dot online"></span>
+                <span>Database Connection</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot online"></span>
+                <span>Data Processing</span>
+            </div>
+            <div class="status-item">
+                <span class="status-dot online"></span>
+                <span>Chart Rendering</span>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .setting-item { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-light); border-radius: 6px; }
+    .setting-item label { font-weight: 600; color: var(--text-dark); }
+    .setting-item span { color: var(--text-muted); }
+    .status-indicators { display: flex; flex-direction: column; gap: 12px; }
+    .status-item { display: flex; align-items: center; gap: 12px; }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .status-dot.online { background: var(--accent-green); }
+    .status-dot.offline { background: var(--accent-red); }
+</style>
+{% endblock %}

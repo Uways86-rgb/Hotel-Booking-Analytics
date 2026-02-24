@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports - Booking Reviews{% endblock %}
+
+{% block content %}
+    <header class="page-header">
+        <h1>Analytics Reports</h1>
+        <p>Detailed statistical reports and insights</p>
+    </header>
+
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">⭐</div>
+            </div>
+            <div class="kpi-label">Average Rating</div>
+            <div class="kpi-value rating">{{ avg_rating }}</div>
+            <div class="kpi-trend up"><span>📊</span> Mean score</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">📈</div>
+            </div>
+            <div class="kpi-label">Median Rating</div>
+            <div class="kpi-value">{{ median_rating }}</div>
+            <div class="kpi-trend"><span>📊</span> Middle value</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">📉</div>
+            </div>
+            <div class="kpi-label">Std Deviation</div>
+            <div class="kpi-value">{{ std_rating }}</div>
+            <div class="kpi-trend"><span>📊</span> Variation</div>
+        </div>
+    </section>
+
+    <section class="charts-grid">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 class="chart-title">Top 10 Hotels by Rating</h2>
+                <span class="chart-badge">Best Performers</span>
+            </div>
+            <div class="top-hotels-list">
+                {% for hotel in top_hotels_list %}
+                <div class="hotel-rank-item">
+                    <span class="rank-number">{{ forloop.counter }}</span>
+                    <span class="hotel-name">{{ hotel.name }}</span>
+                    <span class="hotel-rating">{{ hotel.rating }} ⭐</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 class="chart-title">Reviews by Province</h2>
+                <span class="chart-badge">Geographic Distribution</span>
+            </div>
+            <div class="province-list">
+                {% for province, count in province_counts.items %}
+                <div class="province-item">
+                    <span class="province-name">{{ province }}</span>
+                    <span class="province-count">{{ count }} reviews</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .province-list, .top-hotels-list { max-height: 350px; overflow-y: auto; }
+    .province-item, .hotel-rank-item { display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); }
+    .province-item:hover, .hotel-rank-item:hover { background: var(--bg-light); }
+    .province-name, .hotel-name { font-weight: 500; color: var(--text-dark); }
+    .province-count, .hotel-rating { color: var(--text-muted); font-size: 0.875rem; }
+    .rank-number { font-weight: 700; color: var(--primary-color); margin-right: 10px; }
+    .hotel-rating { color: var(--accent-yellow); font-weight: 600; }
+</style>
+{% endblock %}

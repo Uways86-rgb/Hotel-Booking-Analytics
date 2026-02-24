@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Reviews - Booking Reviews{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Customer Reviews</h1>
+        <p>View all customer reviews and sentiment analysis</p>
+    </header>
+
+    <!-- Stats Summary -->
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">📝</div>
+            </div>
+            <div class="kpi-label">Total Reviews</div>
+            <div class="kpi-value">{{ total_reviews }}</div>
+            <div class="kpi-trend up">
+                <span>📊</span> In database
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">😊</div>
+            </div>
+            <div class="kpi-label">Positive Reviews</div>
+            <div class="kpi-value" style="color: var(--accent-green);">{{ positive_count }}</div>
+            <div class="kpi-trend up">
+                <span>↑</span> Rating > 7
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">😐</div>
+            </div>
+            <div class="kpi-label">Neutral Reviews</div>
+            <div class="kpi-value" style="color: var(--accent-yellow);">{{ neutral_count }}</div>
+            <div class="kpi-trend">
+                <span>→</span> Rating 5-7
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">😞</div>
+            </div>
+            <div class="kpi-label">Negative Reviews</div>
+            <div class="kpi-value" style="color: var(--accent-red);">{{ negative_count }}</div>
+            <div class="kpi-trend down">
+                <span>↓</span> Rating ≤ 5
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Reviews -->
+    <section class="chart-card">
+        <div class="chart-header">
+            <h2 class="chart-title">Recent Reviews</h2>
+            <span class="chart-badge">Latest</span>
+        </div>
+        <div class="reviews-list">
+            {% for review in recent_reviews %}
+            <div class="review-item">
+                <div class="review-header">
+                    <span class="review-hotel">{{ review.name }}</span>
+                    <span class="review-rating {% if review.reviews.rating > 7 %}positive{% elif review.reviews.rating > 5 %}neutral{% else %}negative{% endif %}">
+                        {{ review.reviews.rating }} ⭐
+                    </span>
+                </div>
+                <div class="review-location">{{ review.reviews.userProvince }}</div>
+                <div class="review-text">{{ review.reviews.text|truncatechars:200 }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .reviews-list {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .review-item {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        transition: var(--transition);
+    }
+    .review-item:hover {
+        background: var(--bg-light);
+    }
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    .review-hotel {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+    }
+    .review-rating {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    .review-rating.positive {
+        background: #d1fae5;
+        color: var(--accent-green);
+    }
+    .review-rating.neutral {
+        background: #fef3c7;
+        color: var(--accent-yellow);
+    }
+    .review-rating.negative {
+        background: #fee2e2;
+        color: var(--accent-red);
+    }
+    .review-location {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    .review-text {
+        color: var(--text-dark);
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}

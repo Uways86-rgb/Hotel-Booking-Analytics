@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Hotels - Booking Reviews{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Hotels Overview</h1>
+        <p>View all hotels and their average ratings</p>
+    </header>
+
+    <!-- Stats Summary -->
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">🏨</div>
+            </div>
+            <div class="kpi-label">Total Hotels</div>
+            <div class="kpi-value">{{ total_hotels }}</div>
+            <div class="kpi-trend up">
+                <span>📊</span> In database
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">⭐</div>
+            </div>
+            <div class="kpi-label">Average Rating</div>
+            <div class="kpi-value rating">{{ avg_rating_all }}</div>
+            <div class="kpi-trend up">
+                <span>↑</span> Overall average
+            </div>
+        </div>
+    </section>
+
+    <!-- Hotels Table -->
+    <section class="chart-card">
+        <div class="chart-header">
+            <h2 class="chart-title">All Hotels by Rating</h2>
+            <span class="chart-badge">Ranked</span>
+        </div>
+        <div class="hotels-list">
+            {% for hotel, data in hotels.items %}
+            <div class="hotel-item">
+                <div class="hotel-name">{{ hotel }}</div>
+                <div class="hotel-rating">
+                    <span class="rating-value">{{ data.reviews.rating }}</span>
+                    <span class="rating-stars">⭐</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hotels-list {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .hotel-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        transition: var(--transition);
+    }
+    .hotel-item:hover {
+        background: var(--bg-light);
+    }
+    .hotel-name {
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+    .hotel-rating {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .rating-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--accent-yellow);
+    }
+    .rating-stars {
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}
