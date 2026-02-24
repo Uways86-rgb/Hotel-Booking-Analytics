@@ -4,9 +4,39 @@
 
 {% block content %}
     <header class="page-header">
-        <h1>Hotel Booking Analytics</h1>
-        <p>Monitor your hotel reviews and customer satisfaction metrics</p>
+        <div class="header-content">
+            <div>
+                <h1>Hotel Booking Analytics</h1>
+                <p>Monitor your hotel reviews and customer satisfaction metrics</p>
+            </div>
+        </div>
     </header>
+
+    <!-- Filter Controls -->
+    <section class="filters-section">
+        <form method="GET" class="filters-form" id="filterForm">
+            <div class="filter-group">
+                <label for="rating">Rating Filter:</label>
+                <select name="rating" id="rating" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {% if selected_rating == 'all' %}selected{% endif %}>All Ratings</option>
+                    <option value="high" {% if selected_rating == 'high' %}selected{% endif %}>High (8-10)</option>
+                    <option value="medium" {% if selected_rating == 'medium' %}selected{% endif %}>Medium (5-7)</option>
+                    <option value="low" {% if selected_rating == 'low' %}selected{% endif %}>Low (0-4)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="province">Province Filter:</label>
+                <select name="province" id="province" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {% if selected_province == 'all' %}selected{% endif %}>All Provinces</option>
+                    {% for province in provinces %}
+                    <option value="{{ province }}" {% if selected_province == province %}selected{% endif %}>{{ province }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="filter-btn">Apply Filters</button>
+            <a href="{% url 'dashboard' %}" class="filter-btn reset">Reset</a>
+        </form>
+    </section>
 
     <section class="kpi-grid">
         <div class="kpi-card">
@@ -35,9 +65,19 @@
             <div class="kpi-value">{{ negative_percent }}%</div>
             <div class="kpi-trend down"><span>↓</span> Below threshold</div>
         </div>
+
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <div class="kpi-icon">📊</div>
+            </div>
+            <div class="kpi-label">Rating Range</div>
+            <div class="kpi-value range-value">{{ rating_min }} - {{ rating_max }}</div>
+            <div class="kpi-trend"><span>📈</span> Min to Max</div>
+        </div>
     </section>
 
     <section class="charts-grid">
+        <!-- Chart 1: Top 5 Hotels by Rating -->
         <div class="chart-card">
             <div class="chart-header">
                 <h2 class="chart-title">Top 5 Hotels by Rating</h2>
@@ -48,13 +88,58 @@
             </div>
         </div>
 
+        <!-- Chart 2: Top 5 Countries by Rating -->
         <div class="chart-card">
             <div class="chart-header">
-                <h2 class="chart-title">Top 5 Countries by Rating</h2>
+                <h2 class="chart-title">Top 5 Provinces by Rating</h2>
                 <span class="chart-badge">By Province</span>
             </div>
             <div class="chart-container">
                 <canvas id="countriesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 3: Rating Distribution (Pie) -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 class="chart-title">Rating Distribution</h2>
+                <span class="chart-badge">Breakdown</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="ratingDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 4: Sentiment Breakdown (Doughnut) -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 class="chart-title">Sentiment Analysis</h2>
+                <span class="chart-badge">Positive/Negative</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="sentimentChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 5: Reviews by Province (Horizontal Bar) -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 class="chart-title">Reviews by Province</h2>
+                <span class="chart-badge">Volume</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="provinceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart 6: Rating Range (Bar) -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 class="chart-title">Rating Statistics</h2>
+                <span class="chart-badge">Min/Max/Avg</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="ratingStatsChart"></canvas>
             </div>
         </div>
     </section>
@@ -62,6 +147,7 @@
 
 {% block extra_js %}
     <script>
+        // Chart 1: Top Hotels
         var hotelLabels = {{ top_hotels_json|safe }};
         var hotelData = {{ top_hotels_data|safe }};
 
@@ -89,6 +175,7 @@
             }
         });
 
+        // Chart 2: Top Countries/Provinces
         var countryLabels = {{ top_countries_json|safe }};
         var countryData = {{ top_countries_data|safe }};
 
@@ -112,6 +199,138 @@
                 scales: {
                     y: { beginAtZero: true, max: 10 },
                     x: { ticks: { maxRotation: 45, minRotation: 0 } }
+                }
+            }
+        });
+
+        // Chart 3: Rating Distribution (Pie)
+        var ratingDistLabels = {{ rating_dist_labels|safe }};
+        var ratingDistData = {{ rating_dist_data|safe }};
+
+        new Chart(document.getElementById('ratingDistChart'), {
+            type: 'pie',
+            data: {
+                labels: ratingDistLabels,
+                datasets: [{
+                    data: ratingDistData,
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(249, 115, 22, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(34, 197, 94, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(249, 115, 22, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(34, 197, 94, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // Chart 4: Sentiment Breakdown (Doughnut)
+        var sentimentData = {{ sentiment_data|safe }};
+
+        new Chart(document.getElementById('sentimentChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Positive (>7)', 'Neutral (5-7)', 'Negative (<5)'],
+                datasets: [{
+                    data: sentimentData,
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(239, 68, 68, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // Chart 5: Reviews by Province (Horizontal Bar)
+        var provinceLabels = {{ province_labels|safe }};
+        var provinceCounts = {{ province_counts|safe }};
+
+        new Chart(document.getElementById('provinceChart'), {
+            type: 'bar',
+            data: {
+                labels: provinceLabels,
+                datasets: [{
+                    label: 'Number of Reviews',
+                    data: provinceCounts,
+                    backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { ticks: { maxRotation: 0 } }
+                }
+            }
+        });
+
+        // Chart 6: Rating Statistics (Bar)
+        var ratingMin = {{ rating_min|safe }};
+        var ratingMax = {{ rating_max|safe }};
+        var ratingAvg = {{ rating_avg|safe }};
+
+        new Chart(document.getElementById('ratingStatsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Minimum', 'Average', 'Maximum'],
+                datasets: [{
+                    label: 'Rating',
+                    data: [ratingMin, ratingAvg, ratingMax],
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(37, 99, 235, 0.8)',
+                        'rgba(16, 185, 129, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(16, 185, 129, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 10 }
                 }
             }
         });
